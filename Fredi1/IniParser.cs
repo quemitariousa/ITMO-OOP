@@ -19,9 +19,9 @@ namespace IniLaboratory
             {
                 text = File.ReadAllLines(theFile);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new FileSystemException(theFile);
+                throw new FileSystemException(theFile, e);
             }
 
             for (int i = 0; i < text.Length; i++)
