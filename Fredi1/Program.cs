@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
-using System.Threading;
-using System.Runtime.CompilerServices;
-using fredioop1;
-using System.Reflection.Metadata;
 using System.Globalization;
 
-namespace fredioop1
+namespace IniLaboratory
 {
     class Program
     {
@@ -18,7 +13,7 @@ namespace fredioop1
             string theFile = "file.txt";
             IniParser iniParser = new IniParser();
 
-            IniFile iniFile = iniParser.Parse(theFile);
+            IniData iniFile = iniParser.Parse(theFile);
             Console.WriteLine($"[COMMON] DiskCachePath = {iniFile.GetString("COMMON", "DiskCachePath")}");
             Console.WriteLine($"[COMMON] LogXML = {iniFile.GetInt("COMMON", "LogXML")}");
             Console.WriteLine($"[ADC_DEV] BufferLenSecons = {iniFile.GetFloat("ADC_DEV", "BufferLenSecons")}");
@@ -27,92 +22,41 @@ namespace fredioop1
 
 
 
-    class IniFile
+    class IniData
     { 
-        List<Section> sections;
+        private List<Section> _sections;
+        private CultureInfo _cultureInfo;
         
-        public IniFile(List<Section> sections)
+        public IniData(List<Section> sections)
         {
-            this.sections = sections;
+            this._sections = sections;
+
+            _cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            _cultureInfo.NumberFormat.CurrencyDecimalSeparator = ".";
         }
         public Int32 GetInt(string sectionName, string propertyName)
         {
-            Int32 toReturn;
-            foreach (var section in sections)
-            {
-                if (section.name == sectionName)
-                {
-                    foreach (var property in section.properties)
-                    {
-                        if (property.key == propertyName)
-                        {
-                            if (Int32.TryParse(property.value, out toReturn))
-                            {
-                                return toReturn;
-                            }
-                            else
-                            {
-                                throw new InvalidPropertyTypeExeption(sectionName, propertyName);
-                            }
-                        }
-                    }
-                }
-            }
+            if (int.TryParse(GetString(sectionName, propertyName), out int result))
+                return result;
             throw new WrongSectionPropertyException(sectionName, propertyName);
         }
 
         public float GetFloat(string sectionName, string propertyName)
         {
-            CultureInfo cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
-            cultureInfo.NumberFormat.CurrencyDecimalSeparator = ".";
-            float toReturn;
-            foreach (var section in sections)
-            {
-                if (section.name == sectionName)
-                {
-                    foreach (var property in section.properties)
-                    {
-                        if (property.key == propertyName)
-                        {
-                            if (float.TryParse(property.value, NumberStyles.Any, cultureInfo, out toReturn))
-                            {
-                                return toReturn;
-                            }
-                            else
-                            {
-                                throw new InvalidPropertyTypeExeption(sectionName, propertyName);
-                            }
-                        }
-                    }
-                }
-            }
+            if (float.TryParse(GetString(sectionName, propertyName), NumberStyles.Any, _cultureInfo, out float result))
+                return result;
+
             throw new WrongSectionPropertyException(sectionName, propertyName);
         }
 
-        public string GetString(string sectionName, string propertyName)
+        public string GetString(string sectionName, string propertyName) // !
         {
-            foreach (var section in sections)
-            {
-                if (section.name == sectionName)
-                {
-                    foreach (var property in section.properties)
-                    {
-                        if (property.key == propertyName)
-                        {
-                            return property.value;
-                        }
-                    }
-                }
-            }
-
-            throw new WrongSectionPropertyException(sectionName, propertyName);
+            return _sections.Find(s => s.name == sectionName)?
+                    .properties
+                    .Find(p => p.key == propertyName)?
+                    .value ?? throw new WrongSectionPropertyException(sectionName, propertyName);
         }
     }
-
-
-
-
-
 
     class IniParser
     { 
@@ -141,39 +85,26 @@ namespace fredioop1
                 string currentLine = text[i].Trim();
                 if (currentLine.StartsWith("[") && currentLine.EndsWith("]"))
                 {
-
-                    string sectionName = currentLine.Substring(1, currentLine.Length - 2);
-                    if (sections.Find(s => s.name == sectionName) == null)
-                    {
-                        lastSection = new Section(sectionName);
-                        sections.Add(lastSection);
-                    }
-                    else 
-                    {
-                        lastSection = sections.Single(s => s.name == sectionName);
-                    }
+                    lastSection = ParseSection(currentLine, sections);
                 }
                 else if(currentLine == String.Empty)
                 {
                     continue;
                 }
-                else if (lastSection != null)
+                else if (lastSection == null)
                 {
-                    string[] keyValue = currentLine.Split("=");
-                    if (keyValue.Length != 2)
                         throw new IncorrectFormatException(currentLine);
-
-                    Property property = new Property(keyValue[0].Trim(), keyValue[1].Trim());
-                    lastSection.properties.Add(property);
                 } else
                 {
-                    throw new IncorrectFormatException(currentLine);
+                    Property property = ParseProperty(currentLine);
+
+                    lastSection.properties.Add(property);
                 }
             }
             return sections;
         }
 
-        string DropComments(string line)
+        private string DropComments(string line)
         {
             if (line.IndexOf(";") != -1)
             {
@@ -183,11 +114,35 @@ namespace fredioop1
             return line;
         }
 
-        public IniFile Parse(string theFile)
+        private Section ParseSection(string line, List<Section> sections)
+        {
+            string sectionName = line.Substring(1, line.Length - 2);
+            Section currentSection = sections.Find(s => s.name == sectionName);
+
+            if (currentSection == null)
+            {
+                currentSection = new Section(sectionName);
+                sections.Add(currentSection);
+            }
+
+            return currentSection;
+        }
+
+        private Property ParseProperty(string currentLine)
+        {
+            string[] values = currentLine.Split("=");
+            if (values.Length != 2)
+                throw new IncorrectFormatException(currentLine);
+
+            Property property = new Property(values[0].Trim(), values[1].Trim());
+            return property;
+        }
+
+        public IniData Parse(string theFile)
         {
             List<Section> sections = ReadFile(theFile);
 
-            IniFile iniFile = new IniFile(sections);
+            IniData iniFile = new IniData(sections);
             return iniFile;
         }
     }
