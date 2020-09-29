@@ -28,7 +28,7 @@ namespace fredioop1
 
 
     class IniFile
-    { // считывание файла, работа с ним
+    { 
         List<Section> sections;
         
         public IniFile(List<Section> sections)
@@ -115,14 +115,14 @@ namespace fredioop1
 
 
     class IniParser
-    { // разбиение на секции, работа с ними и тд
+    { 
 
         private List<Section> ReadFile(string theFile)
         {
             string[] text;
             try 
             {
-                text = File.ReadAllLines(theFile); // считывание файл выдает жопу
+                text = File.ReadAllLines(theFile);
             }
             catch(Exception)
             {
