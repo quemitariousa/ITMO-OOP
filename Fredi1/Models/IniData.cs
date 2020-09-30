@@ -6,7 +6,7 @@ using System.Text;
 
 namespace IniLaboratory.Models
 {
-    class IniData
+    public class IniData
     {
         private List<Section> _sections;
         private CultureInfo _cultureInfo;

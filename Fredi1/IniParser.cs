@@ -9,7 +9,7 @@ using IniLaboratory.Models;
 namespace IniLaboratory
 {
 
-    class IniParser
+    public class IniParser
     {
 
         private List<Section> ReadFile(string theFile)
