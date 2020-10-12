@@ -6,4 +6,8 @@
     <RootNamespace>Shop_OOP</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+  </ItemGroup>
+
 </Project>
