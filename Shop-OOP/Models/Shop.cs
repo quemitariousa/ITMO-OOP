@@ -45,7 +45,7 @@ namespace Shop_OOP.Models
 
         }
 
-        public List<(Product, int)> ProductsCanIBuyInTheShop(decimal sum)
+        public List<(Product, int)> CountProductsForSum(decimal sum)
         {
             return _storage
                 .Select(x => x.Product)
@@ -116,7 +116,7 @@ namespace Shop_OOP.Models
         private decimal BuyProduct(Product product, int count)
         {
             if (!CheckBuyOpportunity(product, count))
-                throw new ArgumentException();
+                throw new ArgumentException("Dont have enough product in shop");
 
             decimal sum = 0;
 

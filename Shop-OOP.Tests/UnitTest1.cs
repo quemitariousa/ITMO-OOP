@@ -92,7 +92,7 @@ namespace Shop_OOP.Tests
             shop.AddConsignment(_products[6], 10, 90);
 
             // Act
-            List<(Product, int)> result = shop.ProductsCanIBuyInTheShop(100);
+            List<(Product, int)> result = shop.CountProductsForSum(100);
 
             // Assert
             Assert.IsTrue(result.Count() == 2);
