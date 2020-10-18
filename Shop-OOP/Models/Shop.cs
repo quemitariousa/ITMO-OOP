@@ -20,20 +20,15 @@ namespace Shop_OOP.Models
             _storage = new List<Consigment>();
         }
 
-        public void AddProductsConsignment(Product product, int count, decimal price)
+        public void AddConsignment(Product product, int count, decimal price)
         {
             _storage.Add(new Consigment(product, count, price));
-        }
-
-        private int CountProductByPrice(Product product, decimal sum)
-        {
-            return 0;
         }
 
         public bool TryGetMinPrice(Product product, out decimal price)
         {
             List<decimal> prices = _storage
-                .Where(x => x.Product.Id == product.Id)
+                .Where(x => x.Product.Id == product.Id && x.Count > 0)
                 .Select(x => x.Price)
                 .ToList();
 
@@ -56,6 +51,7 @@ namespace Shop_OOP.Models
                 .Select(x => x.Product)
                 .Distinct(new ProductComparer())
                 .Select(x => (x, HowMuchCanBought(x, sum)))
+                .Where(x => x.Item2 > 0)
                 .ToList();
         }
 
@@ -77,36 +73,57 @@ namespace Shop_OOP.Models
                 }
                 else
                 {
-                    countOfProduct += Convert.ToInt32(sum / consigment.Price);
+                    countOfProduct += Decimal.ToInt32(sum / consigment.Price);
                     break;
                 }
             }
 
             return countOfProduct;
-
         }
 
-      //  public bool TryBuyProducts(List<(Product, int)> shoppingList, out decimal sum)
-      //  {
-      //
-       // }
-
-        public bool TryBuyProduct(Product product, int count, out decimal sum)
+        public bool TryBuyProducts(List<(Product, int)> shoppingList, out decimal sum)
         {
+            sum = 0;
+
+            bool isAvailable = shoppingList
+                .All(x => CheckBuyOpportunity(x.Item1, x.Item2));
+            if (!isAvailable)
+                return false;
+
+            sum = shoppingList
+                .Select(x => BuyProduct(x.Item1, x.Item2))
+                .Sum();
+
+            return true;
+        }
+
+        public bool TryCountPrice(List<(Product, int)> shoppingList, out decimal sum)
+        { 
+            sum = 0;
+
+            bool isAvailable = shoppingList
+                .All(x => CheckBuyOpportunity(x.Item1, x.Item2));
+            if (!isAvailable)
+                return false;
+
+            sum = shoppingList
+                .Select(x => CountPrice(x.Item1, x.Item2))
+                .Sum();
+
+            return true;
+        }
+
+        private decimal BuyProduct(Product product, int count)
+        {
+            if (!CheckBuyOpportunity(product, count))
+                throw new ArgumentException();
+
+            decimal sum = 0;
+
             List<Consigment> consigments = _storage
                .Where(x => x.Product.Id == product.Id)
                .OrderBy(x => x.Price)
                .ToList();
-
-            sum = 0;
-
-            int countInStorage = consigments
-                .Select(x => x.Count)
-                .Sum();
-            if (count > countInStorage)
-            {
-                return false;
-            }
 
             foreach (var consigment in consigments)
             {
@@ -122,7 +139,46 @@ namespace Shop_OOP.Models
                 }
             }
 
-            return true;
+            return sum;
+        }
+
+        private bool CheckBuyOpportunity(Product product, int count)
+        {
+            int countInStorage = _storage
+               .Where(x => x.Product.Id == product.Id)
+               .Select(x => x.Count)
+               .Sum();
+
+            return countInStorage >= count;
+        }
+
+        private decimal CountPrice(Product product, int count)
+        {
+            if (!CheckBuyOpportunity(product, count))
+                throw new ArgumentException();
+
+            decimal sum = 0;
+
+            List<Consigment> consigments = _storage
+               .Where(x => x.Product.Id == product.Id)
+               .OrderBy(x => x.Price)
+               .ToList();
+
+            foreach (var consigment in consigments)
+            {
+                if (consigment.Count < count)
+                {
+                    count -= consigment.Count;
+                    sum += consigment.Count * consigment.Price;
+                }
+                else
+                {
+                    sum += count * consigment.Price;
+                    break;
+                }
+            }
+
+            return sum;
         }
     }
 }

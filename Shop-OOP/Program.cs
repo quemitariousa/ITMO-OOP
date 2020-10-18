@@ -7,6 +7,8 @@ namespace Shop_OOP
     {
         static void Main(string[] args)
         {
+
+
         }
     }
 
