@@ -66,7 +66,7 @@ namespace Shop_OOP.Tests
             Shop expectedShop = _shops[2];
 
             // Act
-            Shop actualShop = _shopManager.FindShopWithCheapestProduct(product);
+            Shop actualShop = _shopManager.GetShopWithCheapestProduct(product);
 
             // Assert
             Assert.IsTrue(expectedShop.Id == actualShop.Id);
@@ -79,7 +79,7 @@ namespace Shop_OOP.Tests
             Product product = _products[0];
 
             // Assert
-            Assert.ThrowsException<ArgumentException>(() => _shopManager.FindShopWithCheapestProduct(product));
+            Assert.ThrowsException<ArgumentException>(() => _shopManager.GetShopWithCheapestProduct(product));
         }
         
         [TestMethod]
@@ -140,7 +140,7 @@ namespace Shop_OOP.Tests
             Shop expectedShop = _shops[0]; 
             
             // Act
-            Shop actualShop = _shopManager.FindShopWithCheapestPurchase(shopList);
+            Shop actualShop = _shopManager.GetShopWithCheapestPurchase(shopList);
 
             // Assert
             Assert.IsTrue(expectedShop.Id == actualShop.Id);

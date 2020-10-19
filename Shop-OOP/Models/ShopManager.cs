@@ -24,7 +24,7 @@ namespace Shop_OOP.Models
             _shops.AddRange(shops);
         }
 
-        public Shop FindShopWithCheapestProduct(Product product)
+        public Shop GetShopWithCheapestProduct(Product product)
         {
             decimal minPrice = decimal.MaxValue;
             Shop shopWithMinPrice = null;
@@ -43,7 +43,7 @@ namespace Shop_OOP.Models
             return shopWithMinPrice ?? throw new ArgumentException("No this product in any shop");
         }
 
-        public Shop FindShopWithCheapestPurchase(List<(Product, int)> shoppingList)
+        public Shop GetShopWithCheapestPurchase(List<(Product, int)> shoppingList)
         {
             decimal minSum = decimal.MaxValue;
             Shop shopWithMinSum = null;
