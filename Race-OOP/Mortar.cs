@@ -10,9 +10,9 @@ namespace Race_OOP
         {
         }
 
-        protected override decimal GetReducedDistance(int distance)
+        protected override double GetReducedDistance(int distance)
         {
-            return (decimal) (distance * 0.94);
+            return (double) (distance * 0.94);
         }
     }
 }

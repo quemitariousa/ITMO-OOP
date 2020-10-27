@@ -10,7 +10,7 @@ namespace Race_OOP
         {
         }
 
-        protected override decimal GetReducedDistance(int distance)
+        protected override double GetReducedDistance(int distance)
         {
             int percent = distance / 1000;
             if (percent > 100)
@@ -18,7 +18,7 @@ namespace Race_OOP
                 percent = 100;
             }
 
-            return (decimal)(distance) * (100 - percent) / 100;
+            return (double)(distance) * (100 - percent) / 100;
         }
     }
 }

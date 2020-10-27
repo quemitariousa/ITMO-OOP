@@ -6,18 +6,18 @@ namespace Race_OOP
 {
     public abstract class GroundTransport : Transport
     {
-        public decimal RestInterval { get; }
+        public double RestInterval { get; }
         
 
-        protected GroundTransport(int speed, decimal restInterval) : base(speed)
+        protected GroundTransport(int speed, double restInterval) : base(speed)
         {
             RestInterval = restInterval;
         }
 
-        protected abstract decimal CountRestDuration(decimal time);
-        public override decimal Move(int distance) 
+        protected abstract double CountRestDuration(double time);
+        public override double Move(int distance) 
         {
-            decimal time = (decimal) distance / Speed;
+            double time = (double) distance / Speed;
             return time + CountRestDuration(time);
         }
     }

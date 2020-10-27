@@ -6,9 +6,12 @@ namespace Race_OOP
     {
         static void Main(string[] args)
         {
-            Race<AirTransport> airRace = new Race<AirTransport>();
+            Race<GroundTransport> airRace = new Race<GroundTransport>();
             BactrianCamel bar = new BactrianCamel();
-            // airRace.Register(bar);
+            airRace.Register(bar);
+            Centaur cen = new Centaur();
+            airRace.Register(cen);
+            
         }
     }
 }

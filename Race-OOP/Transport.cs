@@ -13,7 +13,7 @@ namespace Race_OOP
             Speed = speed;
         }
 
-        public abstract decimal Move(int distance);
+        public abstract double Move(int distance);
 
     }
 }

@@ -10,9 +10,9 @@ namespace Race_OOP
         {
         }
 
-        protected abstract decimal GetReducedDistance(int distance);
+        protected abstract double GetReducedDistance(int distance);
 
-        public override decimal Move(int distance)
+        public override double Move(int distance)
         {
             return GetReducedDistance(distance) / Speed;
         }

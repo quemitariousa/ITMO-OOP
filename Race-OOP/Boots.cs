@@ -10,15 +10,15 @@ namespace Race_OOP
         {
         }
 
-        protected override decimal CountRestDuration(decimal time)
+        protected override double CountRestDuration(double time)
         {
-            int restCount = decimal.ToInt32(time / RestInterval);
+            int restCount = (int)(time / RestInterval);
 
             if (restCount * RestInterval == time && restCount != 0)
             {
                 restCount--;
             }
-            decimal restDuration = 0;
+            double restDuration = 0;
             if (restDuration > 0)
             {
                 restDuration += 10;
