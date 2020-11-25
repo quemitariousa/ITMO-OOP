@@ -6,7 +6,7 @@ namespace Backup_OOP.CleanAlgorithms
 {
     public class SizeCleanAlgorithm : ICleanAlgorithm
     {
-        private int _size;
+        private readonly int _size;
 
         public SizeCleanAlgorithm(int size)
         {
@@ -14,7 +14,7 @@ namespace Backup_OOP.CleanAlgorithms
         }
         public int GetForRemove(List<RestorePoint> restorePoints)
         {
-            int sum = restorePoints.Sum(x => x.Size);
+            long sum = restorePoints.Sum(x => x.Size);
 
             for(int i = 0; i < restorePoints.Count; i++)
             {

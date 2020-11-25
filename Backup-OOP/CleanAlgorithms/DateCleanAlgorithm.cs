@@ -7,7 +7,7 @@ namespace Backup_OOP.CleanAlgorithms
 {
     public class DateCleanAlgorithm : ICleanAlgorithm
     {
-        private DateTime _date;
+        private readonly DateTime _date;
 
         public DateCleanAlgorithm(DateTime date)
         {

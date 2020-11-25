@@ -8,8 +8,8 @@ namespace Backup_OOP.CleanAlgorithms
 {
     public class HybridCleanAlgorithm : ICleanAlgorithm
     {
-        private List<ICleanAlgorithm> _cleanAlgorithms;
-        private HybridType _hybridType;
+        private readonly List<ICleanAlgorithm> _cleanAlgorithms;
+        private readonly HybridType _hybridType;
 
         public HybridCleanAlgorithm(List<ICleanAlgorithm> cleanAlgorithms, HybridType hybridType)
         {

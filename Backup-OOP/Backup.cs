@@ -11,19 +11,17 @@ namespace Backup_OOP
     {
         public Guid Id { get; }
         public long Size => _restorePoints.Sum(x => x.Size);
-        private List<RestorePoint> _restorePoints;
-        private List<string> _watchedFilePaths;
+        private  List<RestorePoint> _restorePoints;
+        private readonly List<string> _watchedFilePaths;
 
-        private ICleanAlgorithm _cleanAlgorithm;
-        private IStorageAlgorithm _storageAlgorithm;
-        private IDateTimeProvider _dateTimeProvider;
-        private IFileSystem _fileSystem;
+        private readonly IStorageAlgorithm _storageAlgorithm;
+        private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IFileSystem _fileSystem;
 
-        private string _backupPath;
-        public Backup(List<string> watchedFilePaths, ICleanAlgorithm cleanAlgorithm, IStorageAlgorithm storageAlgorithm, IDateTimeProvider dateTimeProvider, IFileSystem fileSystem)
+        private readonly string _backupPath;
+        public Backup(List<string> watchedFilePaths, IStorageAlgorithm storageAlgorithm, IDateTimeProvider dateTimeProvider, IFileSystem fileSystem)
         {
             _watchedFilePaths = watchedFilePaths;
-            _cleanAlgorithm = cleanAlgorithm;
             _storageAlgorithm = storageAlgorithm;
             _dateTimeProvider = dateTimeProvider;
             _fileSystem = fileSystem;
@@ -43,14 +41,42 @@ namespace Backup_OOP
         public void CreateRestorePoint(RestoreType restoreType)
         {
             List<FileInformation> files = _watchedFilePaths.Select(x => _fileSystem.Read(x)).ToList();
+
+            if (restoreType == RestoreType.Increment)
+            {
+                RestorePoint lastFullRestorePoint = _restorePoints.Last(x => x.RestoreType == RestoreType.Full);
+                List<RestorePoint> lastRestorePoints = _restorePoints.AsEnumerable().Reverse()
+                    .TakeWhile(x => x.RestoreType == RestoreType.Increment).ToList();
+                lastRestorePoints.Add(lastFullRestorePoint);
+
+                List<FileInformation> incrementedFiles = new List<FileInformation>();
+
+                foreach (var file in files)
+                {
+                    List<FileInformation> fileUpdates = lastRestorePoints
+                        .Select(x => x.GetFile(file.Path))
+                        .Where(x => x != null)
+                        .Cast<FileInformation>()
+                        .ToList();
+                    FileInformation diff = file.GetDiff(fileUpdates);
+                    if (diff.Size > 0)
+                    {
+                        incrementedFiles.Add(diff);
+                    }
+                }
+
+                files = incrementedFiles;
+            }
+
             RestorePoint restorePoint = _storageAlgorithm.Storage(_backupPath, _dateTimeProvider.GetCurrentTime(),
-                RestoreType.Full, files);
+                restoreType, files);
+
             _restorePoints.Add(restorePoint);
             WriteRestorePoint(restorePoint);
 
         }
 
-        public void WriteRestorePoint(RestorePoint restorePoint)
+        private void WriteRestorePoint(RestorePoint restorePoint)
         {
             switch (restorePoint.StorageType)
             {
@@ -66,6 +92,30 @@ namespace Backup_OOP
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public void Clean(ICleanAlgorithm cleanAlgorithm)
+        {
+            int count = cleanAlgorithm.GetForRemove(_restorePoints);
+            if (count == _restorePoints.Count)
+            {
+                count--;
+            }
+            if (count == 0)
+            {
+                return;
+            }
+
+            IEnumerable<RestorePoint> restorePointsForRemove = _restorePoints.Take(count);
+            if (_restorePoints[count].RestoreType == RestoreType.Increment)
+            {
+                restorePointsForRemove = restorePointsForRemove
+                    .Reverse()
+                    .SkipWhile(x => x.RestoreType == RestoreType.Increment)
+                    .Skip(1);
+            }
+
+            _restorePoints = _restorePoints.Skip(restorePointsForRemove.Count()).ToList();
         }
     }
 }

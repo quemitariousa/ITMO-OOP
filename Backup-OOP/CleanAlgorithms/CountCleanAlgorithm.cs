@@ -5,7 +5,7 @@ namespace Backup_OOP.CleanAlgorithms
 {
     public class CountCleanAlgorithm : ICleanAlgorithm
     {
-        private int _count;
+        private readonly int _count;
 
         public CountCleanAlgorithm(int count)
         {

@@ -28,5 +28,10 @@ namespace Backup_OOP
             Path = backupPath + "/" + "Restore" + Id.ToString();
             RestoreFiles = files.Select(x => x.Restore(Path)).ToList();
         }
+
+        public RestoreFileInformation GetFile(string sourcePath)
+        {
+            return RestoreFiles.FirstOrDefault(x => x.SourcePath == sourcePath);
+        }
     }
 }

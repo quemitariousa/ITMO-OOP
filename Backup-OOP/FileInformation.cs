@@ -22,9 +22,9 @@ namespace Backup_OOP
             return new RestoreFileInformation(Size, targetPath, Path);
         }
 
-        public FileInformation GetDiff(FileInformation lastFull, List<FileInformation> diffs)
+        public FileInformation GetDiff(List<FileInformation> diffs)
         {
-            long diffSize = Size - lastFull.Size - diffs.Sum(x => x.Size);
+            long diffSize = Size - diffs.Sum(x => x.Size);
             return new FileInformation(diffSize, Path);
         }
     }
