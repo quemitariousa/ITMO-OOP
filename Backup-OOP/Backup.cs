@@ -10,6 +10,7 @@ namespace Backup_OOP
     public class Backup
     {
         public Guid Id { get; }
+        public List<RestorePoint> RestorePoints => _restorePoints.ToList();
         public long Size => _restorePoints.Sum(x => x.Size);
         private  List<RestorePoint> _restorePoints;
         private readonly List<string> _watchedFilePaths;
@@ -19,9 +20,8 @@ namespace Backup_OOP
         private readonly IFileSystem _fileSystem;
 
         private readonly string _backupPath;
-        public Backup(List<string> watchedFilePaths, IStorageAlgorithm storageAlgorithm, IDateTimeProvider dateTimeProvider, IFileSystem fileSystem)
+        public Backup(IStorageAlgorithm storageAlgorithm, IDateTimeProvider dateTimeProvider, IFileSystem fileSystem)
         {
-            _watchedFilePaths = watchedFilePaths;
             _storageAlgorithm = storageAlgorithm;
             _dateTimeProvider = dateTimeProvider;
             _fileSystem = fileSystem;
@@ -87,7 +87,7 @@ namespace Backup_OOP
                     }
                     break;
                 case StorageType.Shared:
-                    _fileSystem.WriteArchive(restorePoint.Path, restorePoint.RestoreFiles.Cast<FileInformation>().ToList());
+                    _fileSystem.Write(new ArchiveFileInformation(restorePoint.Path, restorePoint.RestoreFiles.Cast<FileInformation>().ToList()));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -116,6 +116,24 @@ namespace Backup_OOP
             }
 
             _restorePoints = _restorePoints.Skip(restorePointsForRemove.Count()).ToList();
+        }
+
+        private void RemoveRestorePoint(RestorePoint restorePoint)
+        {
+            switch (restorePoint.StorageType)
+            {
+                case StorageType.Separate:
+                    foreach (var file in restorePoint.RestoreFiles)
+                    {
+                        _fileSystem.Remove(file.Path);
+                    }
+                    break;
+                case StorageType.Shared:
+                    _fileSystem.Remove(restorePoint.Path);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

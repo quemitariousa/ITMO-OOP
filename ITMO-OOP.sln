@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject1", "UnitTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Race-OOP", "Race-OOP\Race-OOP.csproj", "{D4E55F1B-A1EC-41A9-B930-9DEE648CB194}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backup-OOP", "Backup-OOP\Backup-OOP.csproj", "{324FB00F-BC07-46B4-94B5-83E8727A1B25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backup-OOP", "Backup-OOP\Backup-OOP.csproj", "{324FB00F-BC07-46B4-94B5-83E8727A1B25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backup-OOP.Tests", "Backup-OOP.Tests\Backup-OOP.Tests.csproj", "{DA8D51DD-CF60-4F4C-91C0-989323D7B5F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{324FB00F-BC07-46B4-94B5-83E8727A1B25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{324FB00F-BC07-46B4-94B5-83E8727A1B25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{324FB00F-BC07-46B4-94B5-83E8727A1B25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA8D51DD-CF60-4F4C-91C0-989323D7B5F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA8D51DD-CF60-4F4C-91C0-989323D7B5F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA8D51DD-CF60-4F4C-91C0-989323D7B5F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA8D51DD-CF60-4F4C-91C0-989323D7B5F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
