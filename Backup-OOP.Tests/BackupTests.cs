@@ -23,7 +23,7 @@ namespace Backup_OOP.Tests
         {
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "a.jjje"));
-            Backup backup = new Backup(new SeparateStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SeparateStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("a.jjje");
             backup.CreateRestorePoint(RestoreType.Full);
@@ -37,7 +37,7 @@ namespace Backup_OOP.Tests
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "b.jjje"));
             mockFileSystem.Write(new FileInformation(100, "b.jjjf"));
-            Backup backup = new Backup(new SeparateStorageAlgorithm(),new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SeparateStorageAlgorithm(),new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("b.jjje");
             backup.Watch("b.jjjf");
@@ -58,7 +58,7 @@ namespace Backup_OOP.Tests
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "b.jjje"));
             mockFileSystem.Write(new FileInformation(100, "b.jjjf"));
-            Backup backup = new Backup(new SeparateStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SeparateStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("b.jjje");
             backup.Watch("b.jjjf");
@@ -79,7 +79,7 @@ namespace Backup_OOP.Tests
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "b.jjje"));
             mockFileSystem.Write(new FileInformation(100, "b.jjjf"));
-            Backup backup = new Backup(new SeparateStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SeparateStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("b.jjje");
             backup.CreateRestorePoint(RestoreType.Full);
@@ -95,7 +95,7 @@ namespace Backup_OOP.Tests
         {
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "b.jjje"));
-            Backup backup = new Backup(new SeparateStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SeparateStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("b.jjje");
             backup.CreateRestorePoint(RestoreType.Full);
@@ -110,7 +110,7 @@ namespace Backup_OOP.Tests
         {
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "b.jjje"));
-            Backup backup = new Backup(new SeparateStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SeparateStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("b.jjje");
             backup.CreateRestorePoint(RestoreType.Full);
@@ -122,7 +122,7 @@ namespace Backup_OOP.Tests
         {
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "b.jjje"));
-            Backup backup = new Backup(new SharedStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SharedStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("b.jjje");
             backup.CreateRestorePoint(RestoreType.Full);
@@ -135,7 +135,7 @@ namespace Backup_OOP.Tests
         {
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "b.jjje"));
-            Backup backup = new Backup(new SharedStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SharedStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("b.jjje");
             backup.CreateRestorePoint(RestoreType.Full);
@@ -151,7 +151,7 @@ namespace Backup_OOP.Tests
         {
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "b.jjje"));
-            Backup backup = new Backup(new SharedStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SharedStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("b.jjje");
             backup.CreateRestorePoint(RestoreType.Full);
@@ -167,7 +167,7 @@ namespace Backup_OOP.Tests
         {
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "b.jjje"));
-            Backup backup = new Backup(new SharedStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SharedStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("b.jjje");
             backup.CreateRestorePoint(RestoreType.Full);
@@ -183,7 +183,7 @@ namespace Backup_OOP.Tests
         {
             var mockFileSystem = new MockFileSystem();
             mockFileSystem.Write(new FileInformation(100, "b.jjje"));
-            Backup backup = new Backup(new SharedStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem);
+            Backup backup = new Backup(new SharedStorageAlgorithm(), new MockDateTimeProvider(DateTime.Now), mockFileSystem, new RestorePointCreator());
 
             backup.Watch("b.jjje");
             backup.CreateRestorePoint(RestoreType.Full);

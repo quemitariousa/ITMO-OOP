@@ -18,13 +18,15 @@ namespace Backup_OOP
         private readonly IStorageAlgorithm _storageAlgorithm;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IFileSystem _fileSystem;
+        private readonly IRestorePointCreator _restorePointCreator;
 
         private readonly string _backupPath;
-        public Backup(IStorageAlgorithm storageAlgorithm, IDateTimeProvider dateTimeProvider, IFileSystem fileSystem)
+        public Backup(IStorageAlgorithm storageAlgorithm, IDateTimeProvider dateTimeProvider, IFileSystem fileSystem, IRestorePointCreator restorePointCreator)
         {
             _storageAlgorithm = storageAlgorithm;
             _dateTimeProvider = dateTimeProvider;
             _fileSystem = fileSystem;
+            _restorePointCreator = restorePointCreator;
 
             Id = Guid.NewGuid();
             _backupPath = "Backup" + Id.ToString();
@@ -41,36 +43,8 @@ namespace Backup_OOP
         public void CreateRestorePoint(RestoreType restoreType)
         {
             List<FileInformation> files = _watchedFilePaths.Select(x => _fileSystem.Read(x)).ToList();
-
-            if (restoreType == RestoreType.Increment)
-            {
-                RestorePoint lastFullRestorePoint = _restorePoints.Last(x => x.RestoreType == RestoreType.Full);
-                List<RestorePoint> lastRestorePoints = _restorePoints.AsEnumerable().Reverse()
-                    .TakeWhile(x => x.RestoreType == RestoreType.Increment).ToList();
-                lastRestorePoints.Add(lastFullRestorePoint);
-
-                List<FileInformation> incrementedFiles = new List<FileInformation>();
-
-                foreach (var file in files)
-                {
-                    List<FileInformation> fileUpdates = lastRestorePoints
-                        .Select(x => x.GetFile(file.Path))
-                        .Where(x => x != null)
-                        .Cast<FileInformation>()
-                        .ToList();
-                    FileInformation diff = file.GetDiff(fileUpdates);
-                    if (diff.Size > 0)
-                    {
-                        incrementedFiles.Add(diff);
-                    }
-                }
-
-                files = incrementedFiles;
-            }
-
-            RestorePoint restorePoint = _storageAlgorithm.Storage(_backupPath, _dateTimeProvider.GetCurrentTime(),
-                restoreType, files);
-
+            RestorePoint restorePoint = _restorePointCreator.Create(_backupPath, files, _restorePoints,
+                _dateTimeProvider, _storageAlgorithm, restoreType);
             _restorePoints.Add(restorePoint);
             WriteRestorePoint(restorePoint);
 
